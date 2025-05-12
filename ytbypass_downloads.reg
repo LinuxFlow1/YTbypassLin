@@ -1,0 +1,12 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\ytbypass]
+@="URL:YouTube Bypass Protocol"
+"URL Protocol"=""
+
+[HKEY_CLASSES_ROOT\ytbypass\shell]
+
+[HKEY_CLASSES_ROOT\ytbypass\shell\open]
+
+[HKEY_CLASSES_ROOT\ytbypass\shell\open\command]
+@="cmd.exe /c start \"\" \"C:\\Users\\User\\Downloads\\loader.bat\"" 

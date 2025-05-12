@@ -1,0 +1,47 @@
+{
+  "manifest_version": 3,
+  "name": "Interactive Watermark for YouTube",
+  "version": "1.0",
+  "description": "Adds a customizable interactive watermark to YouTube pages with bypass control",
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["launcher.js", "content.js"]
+    }
+  ],
+  "permissions": [
+    "storage",
+    "notifications",
+    "tabs",
+    "activeTab",
+    "webNavigation",
+    "alarms",
+    "downloads"
+  ],
+  "host_permissions": [
+    "*://*.youtube.com/*"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*", "launcher.js", "directlaunch.html", "bypass_config.json"],
+      "matches": ["*://*.youtube.com/*"]
+    }
+  ],
+  "action": {
+    "default_title": "Interactive Watermark",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+} 

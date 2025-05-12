@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Настройка водяного знака</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      width: 320px;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    
+    .container {
+      padding: 15px;
+    }
+    
+    h2 {
+      font-size: 18px;
+      margin: 0 0 15px 0;
+      color: #3F51B5;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .close-window-btn {
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 18px;
+      cursor: pointer;
+      transition: color 0.2s;
+      display: none; /* По умолчанию скрыта */
+    }
+    
+    .close-window-btn:hover {
+      color: #f44336;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+    
+    input[type="range"] {
+      width: 100%;
+    }
+    
+    input[type="color"] {
+      width: 35px;
+      height: 35px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    .color-picker {
+      display: flex;
+      align-items: center;
+    }
+    
+    .color-value {
+      margin-left: 10px;
+      font-family: monospace;
+      font-size: 14px;
+    }
+    
+    .checkbox-wrapper {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    
+    input[type="checkbox"] {
+      margin-right: 8px;
+    }
+    
+    .shape-selection {
+      display: flex;
+      margin-top: 5px;
+    }
+    
+    .shape-option {
+      flex: 1;
+      text-align: center;
+      padding: 5px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin: 0 5px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .shape-option.selected {
+      background-color: #3F51B5;
+      color: white;
+      border-color: #3F51B5;
+    }
+    
+    button {
+      background-color: #3F51B5;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.2s;
+      width: 100%;
+      margin-top: 5px;
+    }
+    
+    button:hover {
+      background-color: #303F9F;
+    }
+    
+    .preview {
+      margin: 15px 0;
+      padding: 15px;
+      border: 1px dashed #ccc;
+      border-radius: 4px;
+      text-align: center;
+      position: relative;
+      background-color: #fafafa;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .preview-watermark {
+      display: inline-block;
+      padding: 5px 15px;
+      background-color: #3F51B5;
+      color: white;
+      border-radius: 4px;
+      opacity: 0.7;
+    }
+    
+    .preview-watermark.circle {
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+    
+    .section-title {
+      font-weight: 500;
+      font-size: 16px;
+      margin: 15px 0 10px 0;
+      color: #555;
+    }
+    
+    .footer {
+      margin-top: 15px;
+      padding-top: 10px;
+      border-top: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>
+      Настройка водяного знака
+      <button id="closeWindowBtn" class="close-window-btn">×</button>
+    </h2>
+    
+    <div class="form-group">
+      <div class="checkbox-wrapper">
+        <input type="checkbox" id="enabled" checked>
+        <label for="enabled">Enable Watermark</label>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="text">Watermark Text:</label>
+      <input type="text" id="text" placeholder="Enter watermark text">
+    </div>
+    
+    <div class="section-title">Appearance</div>
+    
+    <div class="form-group">
+      <label>Shape:</label>
+      <div class="shape-selection">
+        <div class="shape-option selected" data-shape="rectangle">Rectangle</div>
+        <div class="shape-option" data-shape="circle">Circle</div>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="opacity">Transparency:</label>
+      <input type="range" id="opacity" min="0.1" max="1" step="0.1" value="0.7">
+    </div>
+    
+    <div class="form-group">
+      <label for="size">Size (px):</label>
+      <input type="number" id="size" min="40" max="300" value="120">
+    </div>
+    
+    <div class="form-group">
+      <label for="color">Background Color:</label>
+      <div class="color-picker">
+        <input type="color" id="color" value="#3F51B5">
+        <span class="color-value" id="color-value">#3F51B5</span>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="scriptPath">Bypass Protocol:</label>
+      <input type="text" id="scriptPath" class="form-control" placeholder="ytbypass://" value="ytbypass://">
+      <small class="form-text text-muted">Protocol must be registered using install_protocol.bat</small>
+      <small class="form-text text-muted" style="color: #F44336;">IMPORTANT: Run install_protocol.bat as administrator before using!</small>
+    </div>
+    
+    <div class="preview">
+      <div class="preview-watermark" id="preview">WATERMARK</div>
+    </div>
+    
+    <div class="section-title">Additional</div>
+    
+    <div class="form-group">
+      <div class="checkbox-wrapper">
+        <input type="checkbox" id="interactive" checked>
+        <label for="interactive">Interactive Mode (draggable)</label>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <button id="save">Save</button>
+      <button id="reset" style="margin-left: 10px; background-color: #F44336;">Reset</button>
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html> 
